@@ -8,7 +8,7 @@ install_yarn() {
   if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "https://nodebin.herokai.com/v1/yarn/$platform/latest.txt"); then
     fail_bin_install yarn $version;
   fi
-
+  echo "url: $url"
   echo "Downloading and installing yarn ($number)..."
   local code=$(curl "$url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/yarn.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
