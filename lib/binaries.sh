@@ -13,6 +13,7 @@ install_yarn() {
   echo "Downloading and installing yarn ($number)..."
   local code=$(curl "$yarn_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/yarn.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
+    echo "$yarn_url"
     echo "Unable to download yarn: $code" && false
   fi
   rm -rf $dir
@@ -39,7 +40,8 @@ install_nodejs() {
   echo "Downloading and installing node $number..."
   local code=$(curl "$node_url" -L --silent --fail --retry 5 --retry-max-time 15 -o /tmp/node.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
-    echo "Unable to download node: $code" && false
+    echo "$node_url"
+    echo "Unable to download node($number): $code" && false
   fi
   tar xzf /tmp/node.tar.gz -C /tmp
   rm -rf "$dir"/*
