@@ -172,7 +172,6 @@ npm_prune_devdependencies() {
     echo "https://github.com/npm/npm/issues/17781"
     echo ""
     echo "You can silence this warning by updating to at least npm 5.7.1 in your package.json"
-    echo "https://devcenter.heroku.com/articles/nodejs-support#specifying-an-npm-version"
     return 0
   elif [ "$npm_version" == "5.6.0" ] ||
        [ "$npm_version" == "5.5.1" ] ||
@@ -186,7 +185,6 @@ npm_prune_devdependencies() {
     echo "https://github.com/npm/npm/issues/19356"
     echo ""
     echo "You can silence this warning by updating to at least npm 5.7.1 in your package.json"
-    echo "https://devcenter.heroku.com/articles/nodejs-support#specifying-an-npm-version"
     return 0
   else
     local start=$(nowms)
