@@ -5,7 +5,10 @@ install_yarn() {
   local url
 
   echo "Resolving yarn version $version..."
-  if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "https://nodebin.herokai.com/v1/yarn/$platform/latest.txt"); then
+  #if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "https://nodebin.herokai.com/v1/yarn/$platform/latest.txt"); then
+  #  fail_bin_install yarn $version;
+  #fi
+  if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "http://lang.goodrain.me/nodejs/v1/yarn/linux-x64/latest-$version.txt"); then
     fail_bin_install yarn $version;
   fi
   yarn_url="http://lang.goodrain.me/nodejs/yarn/release/yarn-v$number.tar.gz"
@@ -33,7 +36,10 @@ install_nodejs() {
   local dir="${2:?}"
 
   echo "Resolving node version $version..."
-  if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "https://nodebin.herokai.com/v1/node/$platform/latest.txt"); then
+  #if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "https://nodebin.herokai.com/v1/node/$platform/latest.txt"); then
+  #  fail_bin_install node $version;
+  #fi
+  if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "http://lang.goodrain.me/nodejs/v1/node/linux-x64/latest-$version.txt"); then
     fail_bin_install node $version;
   fi
   node_url="http://lang.goodrain.me/nodejs/node/release/linux-x64/node-v$number-linux-x64.tar.gz"
@@ -50,16 +56,20 @@ install_nodejs() {
 }
 
 install_iojs() {
-  local version="$1"
+  local version=${1:-3.x}
   local dir="$2"
 
   echo "Resolving iojs version ${version:-(latest stable)}..."
-  if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "https://nodebin.herokai.com/v1/iojs/$platform/latest.txt"); then
+  #if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "https://nodebin.herokai.com/v1/iojs/$platform/latest.txt"); then
+  #  fail_bin_install iojs $version;
+  #fi
+  if ! read number url < <(curl --silent --get --retry 5 --retry-max-time 15 --data-urlencode "range=$version" "http://lang.goodrain.me/nodejs/v1/iojs/linux-x64/latest-$version.txt"); then
     fail_bin_install iojs $version;
   fi
 
+  iojs_url="http://lang.goodrain.me/nodejs/iojs/release/v$version/iojs-v$version-linux-x64.tar.gz"
   echo "Downloading and installing iojs $number..."
-  local code=$(curl "$url" --silent --fail --retry 5 --retry-max-time 15 -o /tmp/iojs.tar.gz --write-out "%{http_code}")
+  local code=$(curl "$iojs_url" --silent --fail --retry 5 --retry-max-time 15 -o /tmp/iojs.tar.gz --write-out "%{http_code}")
   if [ "$code" != "200" ]; then
     echo "Unable to download iojs: $code" && false
   fi
