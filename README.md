@@ -15,9 +15,22 @@
 
 ## 配置
 
-### 指定一个node版本
+### 支持版本
 
-当前支持v0.10.*、v0.12.*、v4.*.*、v5.*.*、v6.*.*、v7.*.*、v8.*.* 、v9.*.* 、v10.*.*(目前支持到10.9.0)  版本，您可以在 `package.json` 里使用 engines 指定版本：
+```
+node  4.x (支持到 4.9.1)
+node  5.x (支持到5.12.0)
+node  6.x (支持到6.14.4)
+node  7.x (支持到7.10.1)
+node  8.x (支持到8.11.4)
+node  9.x (支持到9.11.2)
+node 10.x (支持到10.9.0)
+yarn  1.x (支持到1.9.4)
+iojs  3.x (支持到3.3.1)
+iojs  2.x (支持到2.5.0)
+```
+
+可以在 `package.json` 里使用 engines 指定版本：
 
 ```bash
 {
@@ -34,13 +47,11 @@
 
 ## **环境变量**
 
-系统会设置以下的环境变量，NODE_ENV 环境变量默认是 production。
+NODE_ENV 环境变量默认是 production。
 
 ```bash
-   # 默认 NODE_ENV 是 production
-   export NODE_ENV=${NODE_ENV:-production}
-   # 添加node的二进制文件目录到PATH
-   PATH=vendor/node/bin:bin:node_modules/.bin:$PATH
+# 默认 NODE_ENV 是 production
+NODE_ENV=${NODE_ENV:-production}
 ```
 
 ## 授权
