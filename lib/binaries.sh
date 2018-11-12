@@ -33,7 +33,7 @@ install_yarn() {
 }
 
 install_nodejs() {
-  local nodejs_version=${1:-8.x}
+  local nodejs_version=${1:-10.x}
   local dir="${2:?}"
   local version="$(echo $nodejs_version| awk -F "." '{print $1}').x"
   echo "Resolving node version $nodejs_version($version)..."
@@ -93,14 +93,14 @@ install_npm() {
   fi
 
   if [ "$version" == "" ]; then
-    echo "Using default npm version: `npm --version`"
-  elif [[ `npm --version` == "$version" ]]; then
-    echo "npm `npm --version` already installed with node"
+    echo "Using default npm version: $npm_version"
+  elif [[ "$npm_version" == "$version" ]]; then
+    echo "npm $npm_version already installed with node"
   else
-    echo "Bootstrapping npm $version (replacing `npm --version`)..."
+    echo "Bootstrapping npm $version (replacing $npm_version)..."
     if ! npm install --unsafe-perm --quiet -g "npm@$version" 2>@1>/dev/null; then
       echo "Unable to install npm $version; does it exist?" && false
     fi
-    echo "npm `npm --version` installed"
+    echo "npm $version installed"
   fi
 }

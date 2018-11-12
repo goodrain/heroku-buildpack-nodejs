@@ -22,6 +22,14 @@ create_default_env() {
   export NODE_VERBOSE=${NODE_VERBOSE:-false}
 }
 
+create_build_env() {
+  # if the user hasn't set NODE_OPTIONS, increase the default amount of space
+  # that a node process can address to match that of the build dynos (2.5GB)
+  if [[ -z $NODE_OPTIONS ]]; then
+    export NODE_OPTIONS="--max_old_space_size=2560"
+  fi
+}
+
 list_node_config() {
   echo ""
   printenv | grep ^NPM_CONFIG_ || true
@@ -46,13 +54,14 @@ export_env_dir() {
   if [ -d "$env_dir" ]; then
     local whitelist_regex=${2:-''}
     local blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH|LANG|BUILD_DIR)$'}
-    if [ -d "$env_dir" ]; then
-      for e in $(ls $env_dir); do
-        echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
-        export "$e=$(cat $env_dir/$e)"
-        :
-      done
-    fi
+    pushd "$env_dir" >/dev/null
+    for e in *; do
+      [ -e "$e" ] || continue
+      echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
+      export "$e=$(cat $e)"
+      :
+    done
+    popd >/dev/null
   fi
 }
 
@@ -73,6 +82,12 @@ write_ci_profile() {
 write_export() {
   local bp_dir="$1"
   local build_dir="$2"
-  echo "export PATH=\"$build_dir/.heroku/node/bin:$build_dir/.heroku/yarn/bin:\$PATH:$build_dir/node_modules/.bin\"" > $bp_dir/export
-  echo "export NODE_HOME=\"$build_dir/.heroku/node\"" >> $bp_dir/export
+
+  # only write the export script if the buildpack directory is writable.
+  # this may occur in situations outside of Heroku, such as running the
+  # buildpacks locally.
+  if [ -w ${bp_dir} ]; then
+    echo "export PATH=\"$build_dir/.heroku/node/bin:$build_dir/.heroku/yarn/bin:\$PATH:$build_dir/node_modules/.bin\"" > $bp_dir/export
+    echo "export NODE_HOME=\"$build_dir/.heroku/node\"" >> $bp_dir/export
+  fi
 }

@@ -1,3 +1,6 @@
+# TODO: Merge these with the output helpers in buildpack-stdlib:
+# https://github.com/heroku/buildpack-stdlib
+
 info() {
   echo "       $*" || true
 }
@@ -6,9 +9,14 @@ info() {
 output() {
   local logfile="$1"
 
-  while read LINE;
+  while IFS= read -r LINE;
   do
-    echo "       $LINE" || true
+    # do not indent headers that are being piped through the output
+    if [[ "$LINE" =~ ^-----\>.* ]]; then
+      echo "$LINE" || true
+    else
+      echo "       $LINE" || true
+    fi
     echo "$LINE" >> "$logfile" || true
   done
 }
